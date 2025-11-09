@@ -16,8 +16,22 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.views.generic import TemplateView
+from rest_framework import routers
+from my_app import views
+
+router = routers.DefaultRouter()
+router.register(r'schools', views.SchoolViewset)
+router.register(r'classes', views.SClassViewset)
+router.register(r'students', views.StudentViewest)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('pages/', include('django.contrib.flatpages.urls'))
+    path('pages/', include('django.contrib.flatpages.urls')),
+    path('swagger-ui/', TemplateView.as_view(
+        template_name='swagger-ui.html',
+        extra_context={'schema_url': 'openapi-schema'}
+    ), name='swagger-ui'),
+    path('', include(router.urls)),
+    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 ]
